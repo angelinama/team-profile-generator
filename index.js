@@ -46,7 +46,7 @@ const writeHTML = (userResponses) => {
   // put user info into html code
   // filename
   // content
-  const content = renderAtTemplate("template.html", userResponses);
+  const content = renderAtTemplate("src/template.html", userResponses);
   console.log(content);
   // write the html code into a file called index.html
   // we can use fs.writeFileSync here
