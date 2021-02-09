@@ -1,91 +1,103 @@
 // DEPENDENCIES
-// something to write files - fs
 const fs = require('fs');
-// something to prompt users with questions - inquirer
 const inquirer = require('inquirer');
 
 // DATA
 // a list of questions
 const questions = [
-//    What is your name
+  {
+    type: "list",
+    name: "role",
+    choices: ["Manager","Engineer", "intern"],
+  	message: "What role do you want to create?"
+  },
   {
     type: "input",
-    name: "yourName",
-    message: "What is your name?"
+    name: "name",
+    message: "What is your name(First name)?"
   },
-//    What is your location
   {
     type: "input",
-    name: "location",
-    message: "What is your location?"
+    name: "id",
+    message: "What is your id?"
   },
-//    Tell us about yourself
   {
     type: "input",
-    name: "bio",
-    message: "Tell us about yourself"
-  },
-//    LinkedIn URL
-  {
-    type: "input",
-    name: "linkedIn",
-    message: "Please enter your LinkedIn URL"
-  },
-//    Github URL
-  {
-    type: "input",
-    name: "gitHub",
-    message: "Please enter your gitHub URL"
-  },
-]
+    name: "email",
+    message: "what is your email?"
+  }
+];
 
 
 // FUNCTIONS
 // writeHTML - takes user reponses and writes an html file
 const writeHTML = (userResponses) => {
-  // put user info into html code
-  // filename
-  // content
-  const content = renderAtTemplate("src/template.html", userResponses);
-  console.log(content);
-  // write the html code into a file called index.html
-  // we can use fs.writeFileSync here
-  fs.writeFileSync("index.html", content, "utf8");
+  console.log(userResponses);
+  // const content = renderAtTemplate("src/template.html", userResponses);
+  // console.log(content);
+
+  // fs.writeFileSync("index.html", content, "utf8");
 
 }
 
-const renderAtTemplate = (file, data) => {
-  // get the contents of the template file
-  const templateContents = fs.readFileSync(`./${file}`, 'utf8');
-  let output = templateContents;
-  // go through the keys of our data object
-  // const dataKeys = Object.keys(data)
-  // console.log(dataKeys)
-  // for (const key of dataKeys) {
-  //   // replace placeholder that match those key names in our template contents
-  //   const itemToReplace = `@~${key}~@`;
-  //   console.log(itemToReplace);
-  //   output = output.replace(itemToReplace, data[key])
-  // }
+// const renderAtTemplate = (file, data) => {
+//   // get the contents of the template file
+//   const templateContents = fs.readFileSync(`./${file}`, 'utf8');
+//   let output = templateContents;
+//   // go through the keys of our data object
+//   // const dataKeys = Object.keys(data)
+//   // console.log(dataKeys)
+//   // for (const key of dataKeys) {
+//   //   // replace placeholder that match those key names in our template contents
+//   //   const itemToReplace = `@~${key}~@`;
+//   //   console.log(itemToReplace);
+//   //   output = output.replace(itemToReplace, data[key])
+//   // }
 
-  for (const key in data) {
-    // replace placeholder that match those key names in our template contents
-    const itemToReplace = `@~${key}~@`;
-    console.log(itemToReplace);
-    output = output.replace(itemToReplace, data[key])
-  }
+//   for (const key in data) {
+//     // replace placeholder that match those key names in our template contents
+//     const itemToReplace = `@~${key}~@`;
+//     console.log(itemToReplace);
+//     output = output.replace(itemToReplace, data[key])
+//   }
   
-  // return the updated page contents
-  return output;
-}
+//   // return the updated page contents
+//   return output;
+// }
 
 // USER INTERACTIONS
 // prompt the user to get answers to our questions
-inquirer
-  .prompt(questions)
+inquirer.prompt(questions)
   .then(userResponse => {
-    //    Write a file with their answers
-    writeHTML(userResponse);
+    let newQuestion = [];
+    if (userResponse.role === 'Engineer') {
+      newQuestion.push({
+        type: "input",
+        name: "github",
+        message: "what is your github?"
+      });
+    } else if (userResponse.role === 'Manager') {
+      newQuestion.push({
+        type: "input",
+        name: "officeNumber",
+        message: "what is your office number?"
+      });
+    } else {
+      newQuestion.push({
+        type: "input",
+        name: "school",
+        message: "what school are you attending?"
+      });
+    }
+    
+    inquirer.prompt(newQuestion)
+    .then(response => {
+      for (const [key, value] of Object.entries(response)) {
+        userResponse[key] = value;
+      };
+      writeHTML(userResponse);
+
+    });
   })
   .catch(err => {
     console.error(err);
