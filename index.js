@@ -1,104 +1,148 @@
 // DEPENDENCIES
 const fs = require('fs');
 const inquirer = require('inquirer');
+const Engineer = require('./lib/Engineer');
+const Manager = require('./lib/Manager');
+const Intern = require('./lib/Intern');
+const { create } = require('domain');
 
 // DATA
+const employees = [];
 // a list of questions
 const questions = [
   {
-    type: "list",
-    name: "role",
-    choices: ["Manager","Engineer", "intern"],
-  	message: "What role do you want to create?"
+    type: "input",
+    name: "managerName",
+  	message: "What is your team manager's name (First name)?"
   },
   {
     type: "input",
-    name: "name",
-    message: "What is your name(First name)?"
+    name: "managerId",
+  	message: "What is your team manager's Id?"
   },
   {
     type: "input",
-    name: "id",
-    message: "What is your id?"
+    name: "managerEmail",
+  	message: "What is your team manager's email?"
   },
   {
     type: "input",
-    name: "email",
-    message: "what is your email?"
-  }
+    name: "officeNumber",
+    message: "what is your team manager's office number?"
+  },
 ];
-
-
-// FUNCTIONS
-// writeHTML - takes user reponses and writes an html file
-const writeHTML = (userResponses) => {
-  console.log(userResponses);
-  // const content = renderAtTemplate("src/template.html", userResponses);
-  // console.log(content);
-
-  // fs.writeFileSync("index.html", content, "utf8");
-
-}
-
-// const renderAtTemplate = (file, data) => {
-//   // get the contents of the template file
-//   const templateContents = fs.readFileSync(`./${file}`, 'utf8');
-//   let output = templateContents;
-//   // go through the keys of our data object
-//   // const dataKeys = Object.keys(data)
-//   // console.log(dataKeys)
-//   // for (const key of dataKeys) {
-//   //   // replace placeholder that match those key names in our template contents
-//   //   const itemToReplace = `@~${key}~@`;
-//   //   console.log(itemToReplace);
-//   //   output = output.replace(itemToReplace, data[key])
-//   // }
-
-//   for (const key in data) {
-//     // replace placeholder that match those key names in our template contents
-//     const itemToReplace = `@~${key}~@`;
-//     console.log(itemToReplace);
-//     output = output.replace(itemToReplace, data[key])
-//   }
-  
-//   // return the updated page contents
-//   return output;
-// }
 
 // USER INTERACTIONS
 // prompt the user to get answers to our questions
 inquirer.prompt(questions)
   .then(userResponse => {
-    let newQuestion = [];
-    if (userResponse.role === 'Engineer') {
-      newQuestion.push({
-        type: "input",
-        name: "github",
-        message: "what is your github?"
-      });
-    } else if (userResponse.role === 'Manager') {
-      newQuestion.push({
-        type: "input",
-        name: "officeNumber",
-        message: "what is your office number?"
-      });
-    } else {
-      newQuestion.push({
-        type: "input",
-        name: "school",
-        message: "what school are you attending?"
-      });
-    }
     
-    inquirer.prompt(newQuestion)
-    .then(response => {
-      for (const [key, value] of Object.entries(response)) {
-        userResponse[key] = value;
-      };
-      writeHTML(userResponse);
 
-    });
+   //create the manager object
+    const manager = new Manager(userResponse.managerName, userResponse.managerId, userResponse.managerEmail, userResponse.officeNumber);
+
+    employees.push(manager);
+    getRole();
   })
   .catch(err => {
     console.error(err);
   })
+
+// FUNCTIONS
+// prompt employee options
+function getRole() {
+  inquirer.prompt([{
+    type: "list",
+    name: "role",
+    choices: ["", "Engineer", "Intern"], //empty string is used to stop the program
+  	message: "What role do you want to create?"
+  }])
+  .then(response => {
+    if (!response.role) {
+      {//user stop entering, generate html
+        console.log(employees);
+        return;
+        //TODO logic of generate html
+      }
+    } else {
+      createTeamMember(response.role);
+    };
+  })
+  .catch(err => {
+    console.error(err);
+  });
+}
+
+// prompt questions to get name, id, email, and github for engineers or school for intern
+function createTeamMember(role) {
+  let newQuestion = [
+    {
+      type: "input",
+      name: "name",
+      message: "What is your name(First name)?"
+    },
+    {
+      type: "input",
+      name: "id",
+      message: "What is your id?"
+    },
+    {
+      type: "input",
+      name: "email",
+      message: "what is your email?"
+    }
+  ];
+  //role specific questions
+  if (role === 'Engineer') {
+    newQuestion.push({
+      type: "input",
+      name: "github",
+      message: "what is your github username?"
+    });
+  } else if (role === 'Intern'){
+    newQuestion.push({
+      type: "input",
+      name: "school",
+      message: "what school are you attending?"
+    });
+  }
+
+  inquirer.prompt(newQuestion)
+    .then(response => {
+      // for (const [key, value] of Object.entries(response)) {
+      //   userResponse[key] = value;
+      // };
+      
+      //create team member objects according to role, Engineer or Intern object and push to employees array
+      if (role === 'Engineer') {
+        const engineer = new Engineer(response.name, response.id, response.email, response.github);
+        employees.push(engineer);
+      } else {
+        const intern = new Intern(response.name, response.id, response.email, response.school);
+        employees.push(intern);
+      }
+
+      //prompt back to get role you want to create
+      getRole();
+    })
+    .catch(err => {
+      console.error(err);
+    });
+
+}
+
+
+// writeHTML - takes user reponses and writes an html file
+const writeHTML = (userResponses) => {
+  console.log(userResponses);
+  // fs.readFile("src/template.html",'utf8', (err, fileData) => {
+  //   if (err) throw err;
+  //   console.log(fileData);
+  // });
+  
+
+  // fs.writeFileSync("index.html", content, "utf8");
+
+}
+
+
