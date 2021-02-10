@@ -4,7 +4,6 @@ const Engineer = require('../lib/Engineer');
 const Manager = require('../lib/Manager');
 const Intern = require('../lib/Intern');
 
-// TODO change hard-coded part to employees
 // const employees = [
 //   new Manager('Mike', 1, "mike@cornell.edu", 1),
 //   new Engineer('Angelina', 2, 'bm579@cornell.edu', 'angelinama'),
@@ -77,8 +76,9 @@ const generateHTMLStr = (employees, startFile, endFile, outputFile) => {
     return readFilePromise(endFile, 'utf8');
   })
   .then(data => {
-    htmlString = htmlString +  data;
-    // console.log(htmlString);
+    htmlString = htmlString + `
+    ${data}
+    `;
     fs.writeFileSync(outputFile, htmlString, "utf8");
   })
   .catch(err => {

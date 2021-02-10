@@ -64,7 +64,6 @@ function getRole() {
   .then(response => {
     if (!response.role) {
       {//user stop entering, generate html
-        //TODO logic of generate html
         generateHTMLStr(employees, startFile, endFile, outputFile);
         return;
       }
