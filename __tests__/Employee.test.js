@@ -40,6 +40,7 @@ describe("Employee", () => {
     it("should return the same name assigned to", () => {
       const employee = new Employee("Angelina", 1 , "angelina890308@gmail.com");
       expect(employee.getName()).toEqual(employee.name);
+      expect(employee.getName()).toEqual('Angelina');
       //Technically we can also test if other properties have been changed but getter function is conventionally only return a value so omit here
     });
   });
@@ -48,6 +49,7 @@ describe("Employee", () => {
     it("should return the same id assigned to", () => {
       const employee = new Employee("Angelina", 1 , "angelina890308@gmail.com");
       expect(employee.getId()).toEqual(employee.id);
+      expect(employee.getId()).toEqual(1);
     });
   });
 
@@ -55,11 +57,12 @@ describe("Employee", () => {
     it("should return the same email assigned to", () => {
       const employee = new Employee("Angelina", 1 , "angelina890308@gmail.com");
       expect(employee.getEmail()).toEqual(employee.email);
+      expect(employee.getEmail()).toEqual("angelina890308@gmail.com");
     });
   });
 
   describe("getRole", () => {
-    it("should return the Employee assigned to", () => {
+    it("should return Employee", () => {
       const employee = new Employee("Angelina", 1 , "angelina890308@gmail.com");
       expect(employee.getRole()).toEqual("Employee");
     });
