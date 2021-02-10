@@ -32,14 +32,14 @@ const questions = [
   },
 ];
 
-// USER INTERACTIONS
+// START HERE: USER INTERACTIONS 
 // prompt the user to get answers to our questions
 inquirer.prompt(questions)
   .then(userResponse => {
     
 
    //create the manager object
-    const manager = new Manager(userResponse.managerName, userResponse.managerId, userResponse.managerEmail, userResponse.officeNumber);
+    const manager = new Manager(userResponse.managerName, parseInt(userResponse.managerId.trim()), userResponse.managerEmail, parseInt(userResponse.officeNumber.trim()));
 
     employees.push(manager);
     getRole();
@@ -115,10 +115,10 @@ function createTeamMember(role) {
       
       //create team member objects according to role, Engineer or Intern object and push to employees array
       if (role === 'Engineer') {
-        const engineer = new Engineer(response.name, response.id, response.email, response.github);
+        const engineer = new Engineer(response.name, parseInt(response.id.trim()), response.email, response.github);
         employees.push(engineer);
       } else {
-        const intern = new Intern(response.name, response.id, response.email, response.school);
+        const intern = new Intern(response.name, parseInt(response.id.trim()), response.email, response.school);
         employees.push(intern);
       }
 
@@ -128,20 +128,6 @@ function createTeamMember(role) {
     .catch(err => {
       console.error(err);
     });
-
-}
-
-
-// writeHTML - takes user reponses and writes an html file
-const writeHTML = (userResponses) => {
-  console.log(userResponses);
-  // fs.readFile("src/template.html",'utf8', (err, fileData) => {
-  //   if (err) throw err;
-  //   console.log(fileData);
-  // });
-  
-
-  // fs.writeFileSync("index.html", content, "utf8");
 
 }
 
