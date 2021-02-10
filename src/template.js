@@ -77,7 +77,7 @@ const generateHTMLStr = (employees, startFile, endFile, outputFile) => {
   })
   .then(data => {
     htmlString = htmlString + `
-    ${data}
+${data}
     `;
     fs.writeFileSync(outputFile, htmlString, "utf8");
   })
