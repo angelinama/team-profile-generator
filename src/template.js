@@ -5,15 +5,12 @@ const Manager = require('../lib/Manager');
 const Intern = require('../lib/Intern');
 
 // TODO change hard-coded part to employees
-const employees = [
-  new Manager('Mike', 1, "mike@cornell.edu", 1),
-  new Engineer('Angelina', 2, 'bm579@cornell.edu', 'angelinama'),
-  new Intern('Dave', 4, 'dave@gmail.com', 'dave@gmail.com'),
-  new Engineer('James',3 ,'jjj@cornell.edu', 'james')
-];
-
-const startFile = "./start.html";
-const endFile = "./end.html";
+// const employees = [
+//   new Manager('Mike', 1, "mike@cornell.edu", 1),
+//   new Engineer('Angelina', 2, 'bm579@cornell.edu', 'angelinama'),
+//   new Intern('Dave', 4, 'dave@gmail.com', 'dave@gmail.com'),
+//   new Engineer('James',3 ,'jjj@cornell.edu', 'james')
+// ];
 
 let htmlString = "";
 
@@ -29,7 +26,7 @@ const readFilePromise = (...args) => {
 }
 
 /** main function to generate html string and call write file function to write to index.html */
-const generateHTMLStr = (employees) => {
+const generateHTMLStr = (employees, startFile, endFile, outputFile) => {
   //append the start html content(before card of Employee) to htmlString
   readFilePromise(startFile, 'utf8')
   .then(data => {
@@ -61,7 +58,7 @@ const generateHTMLStr = (employees) => {
       }
 
       htmlString = htmlString + `
-        <div class="card shadow-lg rounded mb-3" style="min-width: 30%;">
+        <div class="card shadow-lg rounded mb-3" style="width: 30%;">
           <div class="card-header bg-primary text-white">
             <h5 class="card-title">${name}</h5>
             <h5 class="card-subtitle mb-2">${role}</h5>
@@ -82,11 +79,12 @@ const generateHTMLStr = (employees) => {
   .then(data => {
     htmlString = htmlString +  data;
     // console.log(htmlString);
-    fs.writeFileSync("../dist/index.html", htmlString, "utf8");
+    fs.writeFileSync(outputFile, htmlString, "utf8");
   })
   .catch(err => {
     console.error(err);
   });
 }
 
-generateHTMLStr(employees);
+// generateHTMLStr(employees, "./start.html", "./end.html", "../dist/index.html");
+module.exports = generateHTMLStr;

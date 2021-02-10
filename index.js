@@ -5,9 +5,13 @@ const Engineer = require('./lib/Engineer');
 const Manager = require('./lib/Manager');
 const Intern = require('./lib/Intern');
 const { create } = require('domain');
+const generateHTMLStr = require('./src/template');
 
 // DATA
 const employees = [];
+const startFile = "./src/start.html";
+const endFile = "./src/end.html";
+const outputFile = "./dist/index.html"
 // a list of questions
 const questions = [
   {
@@ -60,9 +64,9 @@ function getRole() {
   .then(response => {
     if (!response.role) {
       {//user stop entering, generate html
-        console.log(employees);
-        return;
         //TODO logic of generate html
+        generateHTMLStr(employees, startFile, endFile, outputFile);
+        return;
       }
     } else {
       createTeamMember(response.role);
